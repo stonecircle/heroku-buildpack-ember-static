@@ -52,7 +52,6 @@ mkdir -p $build_dir/logs
 
 echo "-----> Install Node"
 install_nodejs "8.x" "$BUILD_DIR/.heroku/node"
-install_npm "5.x" "$BUILD_DIR/.heroku/node"
 
 echo "-----> Building Ember App"
 # Build the ember app
