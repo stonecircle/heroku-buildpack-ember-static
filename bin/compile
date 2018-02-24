@@ -3,10 +3,27 @@
 
 set -e
 
+BP_DIR=$(cd $(dirname ${0:-}); cd ..; pwd)
+
+BUILD_DIR=${1:-}
+CACHE_DIR=${2:-}
+ENV_DIR=${3:-}
+BP_DIR=$(cd $(dirname ${0:-}); cd ..; pwd)
+STDLIB_FILE=$(mktemp -t stdlib.XXXXX)
+
+curl --silent --retry 5 --retry-max-time 15 'https://lang-common.s3.amazonaws.com/buildpack-stdlib/v7/stdlib.sh' > "$STDLIB_FILE"
+source "$STDLIB_FILE"
+source $BP_DIR/lib/binaries.sh
+source $BP_DIR/lib/failure.sh
+source $BP_DIR/lib/environment.sh
+
+export PATH="$BUILD_DIR/.heroku/node/bin":$PATH
+
 build_dir=$1
 cache_dir=$2
 env_dir=$3
 bp_dir=$(dirname $(dirname $0))
+mkdir -p "$BUILD_DIR/.heroku/node/"
 
 fetch_nginx_tarball() {
     local version="1.9.7"
@@ -32,5 +49,16 @@ mkdir -p $build_dir/config
 cp $bp_dir/scripts/config/templates/mime.types $build_dir/config
 
 mkdir -p $build_dir/logs
+
+echo "-----> Install Node"
+install_nodejs "8.x" "$BUILD_DIR/.heroku/node"
+install_npm "5.x" "$BUILD_DIR/.heroku/node"
+
+echo "-----> Building Ember App"
+# Build the ember app
+cd $build_dir
+npm i
+npm run build-production
+echo "-----> Finished Building Ember App"
 
 exit 0
