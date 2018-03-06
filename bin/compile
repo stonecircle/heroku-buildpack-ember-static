@@ -25,6 +25,8 @@ env_dir=$3
 bp_dir=$(dirname $(dirname $0))
 mkdir -p "$BUILD_DIR/.heroku/node/"
 
+export_env_dir $ENV_DIR
+
 fetch_nginx_tarball() {
     local version="1.9.7"
     local tarball_file="nginx-$version.tgz"
