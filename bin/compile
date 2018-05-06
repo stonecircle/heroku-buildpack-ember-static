@@ -59,7 +59,7 @@ echo "-----> Building Ember App"
 # Build the ember app
 cd $build_dir
 npm i
-npm run build-production
+npx ember build -e production
 echo "-----> Finished Building Ember App"
 
 exit 0
