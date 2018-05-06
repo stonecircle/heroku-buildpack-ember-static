@@ -62,4 +62,8 @@ npm i
 npx ember build -e production
 echo "-----> Finished Building Ember App"
 
+echo "-----> Removing node_modules directory from slug"
+rm -rf node_modules
+echo "-----> Finished removing node_modules"
+
 exit 0
